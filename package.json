@@ -1,0 +1,9 @@
+{
+  "name": "bullmqdemo",
+  "version": "1.0.0",
+  "main": "app.js",
+  "repository": "https://github.com/ahatomaslin0710/bullmqdemo",
+  "author": "Avancevl",
+  "license": "MIT",
+  "private": true
+}
