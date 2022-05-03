@@ -1,0 +1,33 @@
+### create jobs
+POST http://localhost:3000/jobs
+Content-Type: application/json
+
+{
+    "title": "Example123311113",
+    "queueName": "testdemo001"
+}
+
+### create new queue
+POST http://localhost:3000/queues
+Content-Type: application/json
+
+{
+    "queueName": "testdemo001"
+}
+
+### Delete Queue
+DELETE http://localhost:3000/queues
+Content-Type: application/json
+
+{
+    "queueName": "testdemo001"
+}
+
+### create new worker
+POST http://localhost:3000/worker
+Content-Type: application/json
+
+{
+    "queueName": "testdemo001"
+}
+###
