@@ -45,34 +45,39 @@ async function setupBullMQProcessor(queueName) {
   await queueScheduler.waitUntilReady();
 
   new Worker(queueName, async (job) => {
-    for (let i = 0; i <= 100; i++) {
-      await sleep(Math.random());
-      await job.updateProgress(i);
-      await job.log(`Processing job at interval ${i}`);
-
-      if (Math.random() * 200 < 1) throw new Error(`Random error ${i}`);
+    try {
+      for (let i = 0; i <= 100; i++) {
+        await sleep(Math.random());
+        await job.updateProgress(i);
+        await job.log(`Processing job at interval ${i}`);
+  
+        if (Math.random() * 200 < 1) throw new Error(`Random error ${i}`);
+      }
+  
+      return { jobId: `This is the return value of job (${job.id})` };
+    }catch(error) {
+      errorExampleBullMq.add('Error', {title: 'error demo test'}, {});
     }
-
-    return { jobId: `This is the return value of job (${job.id})` };
   });
 }
 
 
 const run = async () => {
   const exampleBullMq = createQueueMQ('ExampleBullMQ');
+  const errorExampleBullMq = createQueueMQ('ErrorExampleBullMQ');
   const activedBullMqs = {
     exampleBullMq,
+    errorExampleBullMq,
   }
 
   const serverAdapter = new ExpressAdapter();
   serverAdapter.setBasePath('/ui');
 
   const boardService = createBullBoard({
-    queues: [new BullMQAdapter(exampleBullMq)],
+    queues: [new BullMQAdapter(exampleBullMq), new BullMQAdapter(errorExampleBullMq)],
     serverAdapter,
   });
 
-  boardService.removeQueue('testdemo001');
   await setupBullMQProcessor(exampleBullMq.name);
 
   const app = express();
@@ -127,6 +132,18 @@ const run = async () => {
         message: 'queue not found',
       });
     }
+  });
+
+  app.post('/jobs/error', (req, res) => {
+    const {
+      opts = {},
+    } = req.body;
+
+      errorExampleBullMq.add('Error', { title: 'some error' }, opts);
+
+      res.send({
+        ok: true,
+      });
   });
 
   app.post('/queues', (req, res) => {

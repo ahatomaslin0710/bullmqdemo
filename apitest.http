@@ -7,6 +7,13 @@ Content-Type: application/json
     "queueName": "testdemo001"
 }
 
+### create Error jobs
+POST http://localhost:3000/jobs/error
+Content-Type: application/json
+
+{
+}
+
 ### create new queue
 POST http://localhost:3000/queues
 Content-Type: application/json
