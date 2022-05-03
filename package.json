@@ -10,5 +10,16 @@
     "queue-core"
   ],
   "author": "Aha",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@bull-board/express": "^3.10.7",
+    "body-parser": "^1.20.0",
+    "bull": "^4.8.2",
+    "bullmq": "^1.81.0",
+    "connect-ensure-login": "^0.1.1",
+    "express": "^4.18.0",
+    "express-session": "^1.17.2",
+    "passport": "^0.5.2",
+    "passport-local": "^1.0.0"
+  }
 }
