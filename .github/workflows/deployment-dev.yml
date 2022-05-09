@@ -69,7 +69,7 @@ jobs:
   #       run: scp -i ./ssh-key-aha-dev.pem  -o "StrictHostKeyChecking no" ./**  ${{ secrets.USERNAME }}@${{ secrets.HOST }}:~/queue-core
   ssh-to-server-restart-service:
     needs:
-        - scp-tarball-to-server
+      - scp-tarball-to-server
     name: restart-service
     runs-on: ubuntu-latest
     steps:
