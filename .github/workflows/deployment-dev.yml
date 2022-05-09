@@ -93,5 +93,6 @@ jobs:
         host: ${{ secrets.HOST }}
         username: ubuntu
         key: ./ssh-key-aha-dev.pem
+        passphrase: ${{ secrets.SSH_KEY_AHA_DEV_VALUE }}
         port: 22
         script: whoami
