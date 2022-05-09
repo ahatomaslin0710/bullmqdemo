@@ -101,8 +101,6 @@ jobs:
       with:
         command: |
           whoami
-          cd ./queue-core
-          pm2 restart configs/ecosystem.dev.config.js
         host: ${{ secrets.HOST }}
         user: ubuntu
         key: ${{ secrets.SSH_KEY_AHA_DEV_VALUE }}
