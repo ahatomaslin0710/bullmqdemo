@@ -100,7 +100,8 @@ jobs:
       uses: fifsky/ssh-action@master
       with:
         command: |
-          whoami
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+          nvm install 16.14.2
         host: ${{ secrets.HOST }}
         user: ubuntu
         key: ${{ secrets.SSH_KEY_AHA_DEV_VALUE }}
