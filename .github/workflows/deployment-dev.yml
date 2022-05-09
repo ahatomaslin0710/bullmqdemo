@@ -10,50 +10,50 @@ on:
 #       - stg
 #     types: [closed]
 jobs:  
-  test-dependency:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node_version: ['16']
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 1
+  # test-dependency:
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       node_version: ['16']
+  #   steps:
+  #     - name: Check out code
+  #       uses: actions/checkout@v2
+  #       with:
+  #         fetch-depth: 1
         
-      - name: Set up node 
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node_version }}
+  #     - name: Set up node 
+  #       uses: actions/setup-node@v1
+  #       with:
+  #         node-version: ${{ matrix.node_version }}
 
-      - name: use cache 
-        uses: actions/cache@v2
-        with:
-          path: |
-            node_modules
-            */*/node_modules
-          key: ${{ matrix.node_version }}-${{ hashFiles('package-lock.json') }}
-  test-unit:
-    needs: test-dependency
-    # runs-on: self-hosted
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node_version: ['16']
-    steps:
-      - name: Set up node 
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node_version }}
-      - name: use cache 
-        uses: actions/cache@v2
-        with:
-          path: |
-            node_modules
-            */*/node_modules
-          key: ${{ matrix.node_version }}-${{ hashFiles('package-lock.json') }}
-      - name: Run unit tests 
-        run: echo "mock unit test success"
+  #     - name: use cache 
+  #       uses: actions/cache@v2
+  #       with:
+  #         path: |
+  #           node_modules
+  #           */*/node_modules
+  #         key: ${{ matrix.node_version }}-${{ hashFiles('package-lock.json') }}
+  # test-unit:
+  #   needs: test-dependency
+  #   # runs-on: self-hosted
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       node_version: ['16']
+  #   steps:
+  #     - name: Set up node 
+  #       uses: actions/setup-node@v1
+  #       with:
+  #         node-version: ${{ matrix.node_version }}
+  #     - name: use cache 
+  #       uses: actions/cache@v2
+  #       with:
+  #         path: |
+  #           node_modules
+  #           */*/node_modules
+  #         key: ${{ matrix.node_version }}-${{ hashFiles('package-lock.json') }}
+  #     - name: Run unit tests 
+  #       run: echo "mock unit test success"
         # run: npm run test:ci
   # scp-tarball-to-server:
   #   needs:
@@ -77,6 +77,12 @@ jobs:
       env:
         FILE_NAME: "./ssh-key-aha-dev.pem"
         FILE_DATA: ${{ secrets.SSH_KEY_AHA_DEV_VALUE }}
+    - name: Check out Git repository # clone the repo to local ci workspace
+      uses: actions/checkout@v2
+    - name: Change file mode
+      run: chmod 0600 ./ssh-key-aha-dev.pem
+    - name: 'copy tarball to server'
+      run: scp -i ./ssh-key-aha-dev.pem  -o "StrictHostKeyChecking no" ./**  ${{ secrets.USERNAME }}@${{ secrets.HOST }}:~/queue-core
     # - name: create pem
     #   run: echo ${{ secrets.SSH_KEY_AHA_DEV_VALUE }} | base64 -d > ./ssh-key-aha-dev.pem
     - name: executing remote ssh commands using password
