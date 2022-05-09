@@ -83,14 +83,19 @@ jobs:
       run: echo "${{ secrets.SSH_KEY_AHA_DEV_VALUE }}" > ./ssh-key-aha-dev.pem
     - name: Change file mode
       run: chmod 0600 ./ssh-key-aha-dev.pem
-    - name: 'copy tarball to server'
+    - name: 'copy files to server'
       run: scp -i ./ssh-key-aha-dev.pem  -o "StrictHostKeyChecking no" -r ./**  ${{ secrets.USERNAME }}@${{ secrets.HOST }}:~/queue-core
-    - name: executing remote ssh commands using password
-      uses: fifsky/ssh-action@master
-      with:
-        command: |
-          cd /tmp
-          ls -a
-        host: ${{ secrets.HOST }}
-        user: ${{ secrets.USERNAME }}
-        key: ./ssh-key-aha-dev.pem
+    - name: 'copy files to server'
+      run: ssh -i ./ssh-key-aha-dev.pem  -o "StrictHostKeyChecking no" ${{ secrets.USERNAME }}@${{ secrets.HOST }} '          
+            #Now we have got the access of EC2 and we will start the deploy .
+            ls -al'
+
+    # - name: executing remote ssh commands using password
+    #   uses: fifsky/ssh-action@master
+    #   with:
+    #     command: |
+    #       cd /tmp
+    #       ls -a
+    #     host: ${{ secrets.HOST }}
+    #     user: ${{ secrets.USERNAME }}
+    #     key: ./ssh-key-aha-dev.pem
