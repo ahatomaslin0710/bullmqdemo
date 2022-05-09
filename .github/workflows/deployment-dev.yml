@@ -86,9 +86,7 @@ jobs:
     - name: 'copy files to server'
       run: scp -i ./ssh-key-aha-dev.pem  -o "StrictHostKeyChecking no" -r ./**  ${{ secrets.USERNAME }}@${{ secrets.HOST }}:~/queue-core
     - name: 'copy files to server'
-      run: ssh -i ./ssh-key-aha-dev.pem  -o "StrictHostKeyChecking no" ${{ secrets.USERNAME }}@${{ secrets.HOST }} '          
-            #Now we have got the access of EC2 and we will start the deploy .
-            ls -al'
+      run: ssh -i ./ssh-key-aha-dev.pem  -o "StrictHostKeyChecking no" ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'ls -al'
 
     # - name: executing remote ssh commands using password
     #   uses: fifsky/ssh-action@master
