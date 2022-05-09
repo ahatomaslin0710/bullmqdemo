@@ -100,6 +100,7 @@ jobs:
       uses: fifsky/ssh-action@master
       with:
         command: |
+          whoami
           cd ./queue-core
           pm2 restart configs/ecosystem.dev.config.js
         host: ${{ secrets.HOST }}
