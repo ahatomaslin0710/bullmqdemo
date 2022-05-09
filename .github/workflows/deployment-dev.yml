@@ -81,19 +81,13 @@ jobs:
     #     FILE_DATA: ${{ secrets.SSH_KEY_AHA_DEV_VALUE }}
     - name: Create pem file
       run: echo "${{ secrets.SSH_KEY_AHA_DEV_VALUE }}" > ./ssh-key-aha-dev.pem
+    - name: Create .env file
+      run: echo "${{ secrets.DEV_ENV}}" > .env
     - name: Change file mode
       run: chmod 0600 ./ssh-key-aha-dev.pem
+    - name: 'clear files on server'
+      run: ssh -i ./ssh-key-aha-dev.pem  -o "StrictHostKeyChecking no" ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'rm -rf ./queue-core/**'
     - name: 'copy files to server'
       run: scp -i ./ssh-key-aha-dev.pem  -o "StrictHostKeyChecking no" -r ./**  ${{ secrets.USERNAME }}@${{ secrets.HOST }}:~/queue-core
     - name: 'copy files to server'
-      run: ssh -i ./ssh-key-aha-dev.pem  -o "StrictHostKeyChecking no" ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'ls -al'
-
-    # - name: executing remote ssh commands using password
-    #   uses: fifsky/ssh-action@master
-    #   with:
-    #     command: |
-    #       cd /tmp
-    #       ls -a
-    #     host: ${{ secrets.HOST }}
-    #     user: ${{ secrets.USERNAME }}
-    #     key: ./ssh-key-aha-dev.pem
+      run: ssh -i ./ssh-key-aha-dev.pem  -o "StrictHostKeyChecking no" ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'cd ./queue-core && pm2 restart configs/ecosystem.dev.config.js'

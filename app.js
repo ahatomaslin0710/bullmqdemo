@@ -1,3 +1,7 @@
+const dotenv = require('dotenv');
+
+dotenv.config();
+
 const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
@@ -8,6 +12,13 @@ const { Queue: QueueMQ, Worker, QueueScheduler } = require('bullmq');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const { ensureLoggedIn } = require('connect-ensure-login');
+
+const {
+  PORT,
+  REDIS_HOST,
+  REDIS_PORT,
+  REDIS_PASSWORD,
+} = process.env;
 
 const sleep = (t) => new Promise((resolve) => setTimeout(resolve, t * 1000));
 
@@ -30,9 +41,9 @@ passport.deserializeUser((user, cb) => {
 
 
 const redisOptions = {
-  port: 6379,
-  host: 'localhost',
-  password: '',
+  port: REDIS_PORT,
+  host: REDIS_HOST,
+  password: REDIS_PASSWORD,
   tls: false,
 };
 
@@ -197,14 +208,14 @@ const run = async () => {
     });
   });
 
-  app.listen(3000, () => {
-    console.log('Running on 3000...');
-    console.log('For the UI, open http://localhost:3000/ui');
+  app.listen(PORT, () => {
+    console.log(`Running on ${PORT}...`);
+    console.log(`For the UI, open http://localhost:${PORT}/ui`);
     console.log('Make sure Redis is running on port 6379 by default');
     console.log('To populate the queue, run:');
-    console.log('  curl http://localhost:3000/add?title=Example');
+    console.log(`  curl http://localhost:${PORT}/add?title=Example`);
     console.log('To populate the queue with custom options (opts), run:');
-    console.log('  curl http://localhost:3000/add?title=Test&opts[delay]=9');
+    console.log(`  curl http://localhost:${PORT}/add?title=Test&opts[delay]=9`);
   });
 };
 
