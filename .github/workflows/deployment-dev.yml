@@ -100,7 +100,9 @@ jobs:
       uses: fifsky/ssh-action@master
       with:
         command: |
+          echo $HOME
           curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+          source ~/.bashrc
           nvm install 16.14.2
         host: ${{ secrets.HOST }}
         user: ubuntu
