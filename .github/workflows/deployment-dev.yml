@@ -1,0 +1,88 @@
+# how to create base64 string: https://www.obytes.com/blog/react-native-github-action
+name: deploy to development server
+on:
+  push:
+    branches:
+      - develop
+# on:
+#   pull_request:
+#     branches:
+#       - stg
+#     types: [closed]
+jobs:
+  # ssh-to-server-restart-service:
+  #   name: Build
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: executing remote ssh commands using password
+  #     uses: appleboy/ssh-action@master
+  #     with:
+  #       host: 54.199.197.111
+  #       username: ubuntu
+  #       key: ./ssh-key-aha-dev.pem
+  #       passphrase: ${{ secrets.PASSPHRASE }}
+  #       port: 22
+  #       script: whoami
+    # - name: copy file via ssh password
+    #   run: scp -i ./ssh-key-aha-dev.pem  -o "StrictHostKeyChecking no" ./queue-core.tgz  ubuntu@54.199.197.111:~
+  test-dependency:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node_version: ['16']
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+        
+      - name: Set up node 
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node_version }}
+
+      - name: use cache 
+        uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+            */*/node_modules
+          key: ${{ matrix.node_version }}-${{ hashFiles('package-lock.json') }}
+  test-unit:
+    needs: test-dependency
+    # runs-on: self-hosted
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node_version: ['16']
+    steps:
+      - name: Set up node 
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node_version }}
+      - name: use cache 
+        uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+            */*/node_modules
+          key: ${{ matrix.node_version }}-${{ hashFiles('package-lock.json') }}
+      - name: Run unit tests 
+        run: npm run test:ci
+  scp-tarball-to-server:
+    needs:
+      - test-dependency
+      - test-unit
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node_version: ['16']
+    steps:
+      - name: create tarball
+        run: tar cvzf queue-core.tgz ./
+          # - mv queue-core.tgz ./queue-core
+          # - cd ./queue-core
+      - name: create tarball
+        run: mv queue-core.tgz ./queue-core
+      - name: 'create tarball'
+        run: scp -i ./ssh-key-aha-dev.pem  -o "StrictHostKeyChecking no" ./queue-core.tgz  ${{ secrets.USERNAME }}@${{ secrets.HOST }}:~

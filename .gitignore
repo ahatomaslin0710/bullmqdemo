@@ -138,3 +138,8 @@ server.log*
 .env*.local
 .env.local
 .eslintcache
+
+# Env files
+id_rsa
+*.secrets
+*.pem
