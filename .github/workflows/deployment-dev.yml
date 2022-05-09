@@ -97,4 +97,4 @@ jobs:
     - name: 'copy files to server'
       run: scp -i ./ssh-key-aha-dev.pem  -o "StrictHostKeyChecking no" -r ./**  ${{ secrets.USERNAME }}@${{ secrets.HOST }}:~/queue-core
     - name: 'copy files to server'
-      run: ssh -i ./ssh-key-aha-dev.pem  -o "StrictHostKeyChecking no" ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'cd ./queue-core && ~/.nvm/versions/node/v16.15.0/bin/pm2 restart configs/ecosystem.dev.config.js'
+      run: ssh -i ./ssh-key-aha-dev.pem  -o "StrictHostKeyChecking no" ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'cd ./queue-core && source ~/.bachrc && ~/.nvm/versions/node/v16.15.0/bin/pm2 restart configs/ecosystem.dev.config.js'
