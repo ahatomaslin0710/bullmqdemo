@@ -92,5 +92,5 @@ jobs:
           cd /tmp
           ls -a
         host: ${{ secrets.HOST }}
-        username: ubuntu
+        user: ${{ secrets.USERNAME }}
         key: ./ssh-key-aha-dev.pem
