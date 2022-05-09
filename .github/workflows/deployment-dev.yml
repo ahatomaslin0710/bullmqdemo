@@ -77,7 +77,7 @@ jobs:
     - name: executing remote ssh commands using password
       uses: appleboy/ssh-action@master
       with:
-        host: {{ secrets.HOST }}
+        host: ${{ secrets.HOST }}
         username: ubuntu
         key: ./ssh-key-aha-dev.pem
         passphrase: ${{ secrets.SSH_KEY_AHA_DEV_VALUE }}
