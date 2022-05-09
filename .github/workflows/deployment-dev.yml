@@ -74,7 +74,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: create pem
-      run: echo ${{ secrets.SSH_KEY_AHA_DEV_VALUE }} > ./ssh-key-aha-dev.pem
+      run: echo ${{ secrets.SSH_KEY_AHA_DEV_VALUE }} | base64 -d > ./ssh-key-aha-dev.pem
     - name: executing remote ssh commands using password
       uses: appleboy/ssh-action@master
       with:
