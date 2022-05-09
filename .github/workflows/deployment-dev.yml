@@ -86,11 +86,11 @@ jobs:
     - name: 'copy tarball to server'
       run: scp -i ./ssh-key-aha-dev.pem  -o "StrictHostKeyChecking no" -r ./**  ${{ secrets.USERNAME }}@${{ secrets.HOST }}:~/queue-core
     - name: executing remote ssh commands using password
-      uses: appleboy/ssh-action@master
+      uses: fifsky/ssh-action@master
       with:
+        command: |
+          cd /tmp
+          ls -a
         host: ${{ secrets.HOST }}
-        username: ubuntu
+        username: ${{ secrets.USERNAME }}
         key: ./ssh-key-aha-dev.pem
-        passphrase: ${{ secrets.PASSPHRASE }}
-        port: 22
-        script: whoami
