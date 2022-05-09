@@ -84,7 +84,7 @@ jobs:
     - name: Change file mode
       run: chmod 0600 ./ssh-key-aha-dev.pem
     - name: 'copy tarball to server'
-      run: scp -i ./ssh-key-aha-dev.pem  -o "StrictHostKeyChecking no" ./**  ${{ secrets.USERNAME }}@${{ secrets.HOST }}:~/queue-core
+      run: scp -i ./ssh-key-aha-dev.pem  -o "StrictHostKeyChecking no" -R ./**  ${{ secrets.USERNAME }}@${{ secrets.HOST }}:~/queue-core
     # - name: create pem
     #   run: echo ${{ secrets.SSH_KEY_AHA_DEV_VALUE }} | base64 -d > ./ssh-key-aha-dev.pem
     - name: executing remote ssh commands using password
