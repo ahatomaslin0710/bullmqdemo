@@ -4,52 +4,7 @@ on:
   push:
     branches:
       - develop
-jobs:  
-  test-dependency:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node_version: ['16']
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 1
-        
-      - name: Set up node 
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node_version }}
-
-      - name: use cache 
-        uses: actions/cache@v2
-        with:
-          path: |
-            node_modules
-            */*/node_modules
-          key: ${{ matrix.node_version }}-${{ hashFiles('package-lock.json') }}
-  test-unit:
-    needs: test-dependency
-    # runs-on: self-hosted
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node_version: ['16']
-    steps:
-      - name: Set up node 
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node_version }}
-      - name: use cache 
-        uses: actions/cache@v2
-        with:
-          path: |
-            node_modules
-            */*/node_modules
-          key: ${{ matrix.node_version }}-${{ hashFiles('package-lock.json') }}
-      - name: Run unit tests 
-        run: echo "mock unit test success"
-        # run: npm run test:ci
+jobs:
   ssh-to-server-restart-service:
     needs:
       - test-unit
