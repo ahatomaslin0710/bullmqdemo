@@ -96,5 +96,14 @@ jobs:
       run: ssh -i ./ssh-key-aha-dev.pem  -o "StrictHostKeyChecking no" ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'rm -rf ./queue-core/**'
     - name: 'copy files to server'
       run: scp -i ./ssh-key-aha-dev.pem  -o "StrictHostKeyChecking no" -r ./**  ${{ secrets.USERNAME }}@${{ secrets.HOST }}:~/queue-core
-    - name: 'copy files to server'
-      run: ssh -i ./ssh-key-aha-dev.pem  -o "StrictHostKeyChecking no" ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'cd ./queue-core && ./scripts/pm2serverrestart.sh'
+    - name: ls -a via ssh
+      uses: fifsky/ssh-action@master
+      with:
+        command: |
+          cd /tmp
+          ls -a
+        host: ${{ secrets.HOST }}
+        user: ubuntu
+        key: ${{ secrets.SSH_KEY_AHA_DEV_VALUE }}
+    # - name: 'copy files to server'
+    #   run: ssh -i ./ssh-key-aha-dev.pem  -o "StrictHostKeyChecking no" ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'cd ./queue-core && ./scripts/pm2serverrestart.sh'
