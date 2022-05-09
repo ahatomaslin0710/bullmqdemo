@@ -85,14 +85,12 @@ jobs:
       run: chmod 0600 ./ssh-key-aha-dev.pem
     - name: 'copy tarball to server'
       run: scp -i ./ssh-key-aha-dev.pem  -o "StrictHostKeyChecking no" -r ./**  ${{ secrets.USERNAME }}@${{ secrets.HOST }}:~/queue-core
-    # - name: create pem
-    #   run: echo ${{ secrets.SSH_KEY_AHA_DEV_VALUE }} | base64 -d > ./ssh-key-aha-dev.pem
     - name: executing remote ssh commands using password
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
         username: ubuntu
         key: ./ssh-key-aha-dev.pem
-        passphrase: ${{ secrets.SSH_KEY_AHA_DEV_VALUE }}
+        passphrase: ./ssh-key-aha-dev.pem
         port: 22
         script: whoami
