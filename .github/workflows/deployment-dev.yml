@@ -73,12 +73,12 @@ jobs:
     name: restart-service
     runs-on: ubuntu-latest
     steps:
+    - name: Check out Git repository # clone the repo to local ci workspace
+      uses: actions/checkout@v2
     - uses: "finnp/create-file-action@master"
       env:
         FILE_NAME: "./ssh-key-aha-dev.pem"
-        FILE_DATA: ${{ secrets.SSH_KEY_AHA_DEV_VALUE }}
-    - name: Check out Git repository # clone the repo to local ci workspace
-      uses: actions/checkout@v2
+        FILE_DATA: ${{ secrets.SSH_KEY_AHA_DEV_VALUE }}    
     - name: Change file mode
       run: chmod 0600 ./ssh-key-aha-dev.pem
     - name: 'copy tarball to server'
