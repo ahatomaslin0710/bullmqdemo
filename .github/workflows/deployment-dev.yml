@@ -73,14 +73,18 @@ jobs:
     name: restart-service
     runs-on: ubuntu-latest
     steps:
-    - name: create pem
-      run: echo ${{ secrets.SSH_KEY_AHA_DEV_VALUE }} | base64 -d > ./ssh-key-aha-dev.pem
+    - uses: "finnp/create-file-action@master"
+      env:
+        FILE_NAME: "./ssh-key-aha-dev.pem"
+        FILE_BASE64: "${{ secrets.SSH_KEY_AHA_DEV_VALUE }}"
+    # - name: create pem
+    #   run: echo ${{ secrets.SSH_KEY_AHA_DEV_VALUE }} | base64 -d > ./ssh-key-aha-dev.pem
     - name: executing remote ssh commands using password
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
         username: ubuntu
-        key: ./ssh-key-aha-dev.pem
-        passphrase: ${{ secrets.SSH_KEY_AHA_DEV_VALUE }}
+        key: "./ssh-key-aha-dev.pem"
+        passphrase: "${{ secrets.SSH_KEY_AHA_DEV_VALUE }}"
         port: 22
         script: whoami
