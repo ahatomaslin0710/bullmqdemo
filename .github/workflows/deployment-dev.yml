@@ -55,22 +55,21 @@ jobs:
       - name: Run unit tests 
         run: echo "mock unit test success"
         # run: npm run test:ci
-  scp-tarball-to-server:
-    needs:
-      - test-dependency
-      - test-unit
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node_version: ['16']
-    steps:
-      - name: create tarball
-        run: tar cvzf queue-core.tgz ./
-      - name: create pem
-        run: echo ${{ secrets.SSH_KEY_AHA_DEV_VALUE }} > ./ssh-key-aha-dev.pem
-      - name: 'copy tarball to server'
-        run: scp -i ./ssh-key-aha-dev.pem  -o "StrictHostKeyChecking no" ./queue-core.tgz  ${{ secrets.USERNAME }}@${{ secrets.HOST }}:~
+  # scp-tarball-to-server:
+  #   needs:
+  #     - test-unit
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       node_version: ['16']
+  #   steps:
+  #     - name: create pem
+  #       run: echo ${{ secrets.SSH_KEY_AHA_DEV_VALUE }} > ./ssh-key-aha-dev.pem
+  #     - name: 'copy tarball to server'
+  #       run: scp -i ./ssh-key-aha-dev.pem  -o "StrictHostKeyChecking no" ./**  ${{ secrets.USERNAME }}@${{ secrets.HOST }}:~/queue-core
   ssh-to-server-restart-service:
+    needs:
+        - scp-tarball-to-server
     name: restart-service
     runs-on: ubuntu-latest
     steps:
