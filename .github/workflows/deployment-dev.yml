@@ -4,72 +4,67 @@ on:
   push:
     branches:
       - develop
-# on:
-#   pull_request:
-#     branches:
-#       - stg
-#     types: [closed]
 jobs:  
-  # test-dependency:
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       node_version: ['16']
-  #   steps:
-  #     - name: Check out code
-  #       uses: actions/checkout@v2
-  #       with:
-  #         fetch-depth: 1
+  test-dependency:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node_version: ['16']
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
         
-  #     - name: Set up node 
-  #       uses: actions/setup-node@v1
-  #       with:
-  #         node-version: ${{ matrix.node_version }}
+      - name: Set up node 
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node_version }}
 
-  #     - name: use cache 
-  #       uses: actions/cache@v2
-  #       with:
-  #         path: |
-  #           node_modules
-  #           */*/node_modules
-  #         key: ${{ matrix.node_version }}-${{ hashFiles('package-lock.json') }}
-  # test-unit:
-  #   needs: test-dependency
-  #   # runs-on: self-hosted
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       node_version: ['16']
-  #   steps:
-  #     - name: Set up node 
-  #       uses: actions/setup-node@v1
-  #       with:
-  #         node-version: ${{ matrix.node_version }}
-  #     - name: use cache 
-  #       uses: actions/cache@v2
-  #       with:
-  #         path: |
-  #           node_modules
-  #           */*/node_modules
-  #         key: ${{ matrix.node_version }}-${{ hashFiles('package-lock.json') }}
-  #     - name: Run unit tests 
-  #       run: echo "mock unit test success"
-        # run: npm run test:ci
-  # scp-tarball-to-server:
-  #   needs:
-  #     - test-unit
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       node_version: ['16']
-  #   steps:
-  #     - name: create pem
-  #       run: echo ${{ secrets.SSH_KEY_AHA_DEV_VALUE }} > ./ssh-key-aha-dev.pem
-  #     - name: 'copy tarball to server'
-  #       run: scp -i ./ssh-key-aha-dev.pem  -o "StrictHostKeyChecking no" ./**  ${{ secrets.USERNAME }}@${{ secrets.HOST }}:~/queue-core
+      - name: use cache 
+        uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+            */*/node_modules
+          key: ${{ matrix.node_version }}-${{ hashFiles('package-lock.json') }}
+  test-unit:
+    needs: test-dependency
+    # runs-on: self-hosted
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node_version: ['16']
+    steps:
+      - name: Set up node 
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node_version }}
+      - name: use cache 
+        uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+            */*/node_modules
+          key: ${{ matrix.node_version }}-${{ hashFiles('package-lock.json') }}
+      - name: Run unit tests 
+        run: echo "mock unit test success"
+        run: npm run test:ci
+  scp-tarball-to-server:
+    needs:
+      - test-unit
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node_version: ['16']
+    steps:
+      - name: create pem
+        run: echo ${{ secrets.SSH_KEY_AHA_DEV_VALUE }} > ./ssh-key-aha-dev.pem
+      - name: 'copy tarball to server'
+        run: scp -i ./ssh-key-aha-dev.pem  -o "StrictHostKeyChecking no" ./**  ${{ secrets.USERNAME }}@${{ secrets.HOST }}:~/queue-core
   ssh-to-server-restart-service:
-    # needs:
-    #   - scp-tarball-to-server
+    needs:
+      - scp-tarball-to-server
     name: restart-service
     runs-on: ubuntu-latest
     strategy:
