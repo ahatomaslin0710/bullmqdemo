@@ -72,9 +72,16 @@ jobs:
     #   - scp-tarball-to-server
     name: restart-service
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node_version: ['16']
     steps:
     - name: Check out Git repository # clone the repo to local ci workspace
       uses: actions/checkout@v2
+    - name: Set up node 
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node_version }}
     # - uses: "finnp/create-file-action@master"
     #   env:
     #     FILE_NAME: "./ssh-key-aha-dev.pem"
