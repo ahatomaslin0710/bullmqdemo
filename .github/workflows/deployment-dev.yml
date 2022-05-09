@@ -52,7 +52,7 @@ jobs:
         # run: npm run test:ci
   ssh-to-server-restart-service:
     needs:
-      - scp-tarball-to-server
+      - test-unit
     name: restart-service
     runs-on: ubuntu-latest
     strategy:
